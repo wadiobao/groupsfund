@@ -1,0 +1,90 @@
+# ===================== MAVEN =====================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ===================== JAVA =====================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# ===================== IDE =====================
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+
+# VS Code
+.vscode/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ===================== SPRING BOOT =====================
+# File cấu hình chứa secret thật — chỉ commit application.yml mẫu, không commit bản có mật khẩu thật
+application-local.yml
+application-local.properties
+application-secrets.yml
+application-dev.properties
+
+# ===================== ENVIRONMENT & SECRETS =====================
+# Không bao giờ commit các file chứa mật khẩu DB, JWT secret, API key SePay/Casso...
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+
+# ===================== DOCKER =====================
+# Dữ liệu volume nếu lỡ mount local thay vì named volume
+docker-data/
+postgres-data/
+
+# ===================== OS =====================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===================== LOGS =====================
+*.log
+logs/
+spring.log
+
+# ===================== TEST & COVERAGE =====================
+/test-output/
+.jacoco/
+jacoco.exec
+
+# ===================== NODE (nếu có phần frontend riêng) =====================
+node_modules/
+dist/
+npm-debug.log*
+yarn-error.log*
+
+# ===================== KHÁC =====================
+*.bak
+*.tmp
+*~
+.env.example.local
