@@ -1,10 +1,11 @@
-package com.banking.groupsfund.entity;
+package com.banking.groupsfund.domain.account.entity;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.banking.groupsfund.entity.BaseEntity;
 import com.banking.groupsfund.enums.MemberRole;
 
 import jakarta.persistence.Column;

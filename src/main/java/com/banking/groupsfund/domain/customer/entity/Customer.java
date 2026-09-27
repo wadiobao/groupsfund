@@ -1,5 +1,6 @@
-package com.banking.groupsfund.entity;
+package com.banking.groupsfund.domain.customer.entity;
 
+import com.banking.groupsfund.entity.BaseEntity;
 import com.banking.groupsfund.enums.KycStatus;
 
 import jakarta.persistence.Column;

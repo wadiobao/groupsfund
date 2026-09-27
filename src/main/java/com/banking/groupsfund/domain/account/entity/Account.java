@@ -1,9 +1,10 @@
-package com.banking.groupsfund.entity;
+package com.banking.groupsfund.domain.account.entity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.banking.groupsfund.entity.BaseEntity;
 import com.banking.groupsfund.enums.AccountStatus;
 import com.banking.groupsfund.enums.AccountType;
 
