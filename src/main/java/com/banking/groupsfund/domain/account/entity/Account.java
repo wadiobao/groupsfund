@@ -58,6 +58,14 @@ public class Account extends BaseEntity {
     @Column(name = "closed_at")
     private Instant closedAt;
 
+    public Account(String name, AccountType accountType, UUID createdBy) {
+        super();
+        this.name = name;
+        this.accountType = accountType;
+        this.createdBy = createdBy;
+        this.status = AccountStatus.ACTIVE;
+    }
+
     public void close() {
         if (this.status != AccountStatus.ACTIVE) {
             throw new IllegalStateException("Chỉ đóng được quỹ đang ACTIVE");

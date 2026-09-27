@@ -50,6 +50,12 @@ public class AccountMember extends BaseEntity {
     @Builder.Default
     private Instant joinedAt = Instant.now();
 
+    public AccountMember(UUID accountId, UUID customerId, MemberRole role) {
+        this.accountMemberId = new AccountMemberId(accountId, customerId);
+        this.role = role;
+        this.joinedAt = Instant.now();
+    }
+
     @Embeddable
     @AllArgsConstructor
     @NoArgsConstructor
