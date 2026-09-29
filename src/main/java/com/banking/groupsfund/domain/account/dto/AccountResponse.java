@@ -9,14 +9,12 @@ import com.banking.groupsfund.enums.AccountStatus;
 import com.banking.groupsfund.enums.AccountType;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class AccountResponse {
     private UUID id;
     private String name;
