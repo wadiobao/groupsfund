@@ -1,6 +1,7 @@
 package com.banking.groupsfund.domain.customer.entity;
 
 import com.banking.groupsfund.entity.BaseEntity;
+import com.banking.groupsfund.enums.CustomerRole;
 import com.banking.groupsfund.enums.KycStatus;
 
 import jakarta.persistence.Column;
@@ -43,4 +44,9 @@ public class Customer extends BaseEntity {
     @Column(name = "kyc_status")
     @Builder.Default
     KycStatus kycStatus = KycStatus.UNVERIFIED;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    @Builder.Default
+    CustomerRole role = CustomerRole.USER;
 }
