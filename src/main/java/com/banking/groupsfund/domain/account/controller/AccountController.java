@@ -7,22 +7,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.banking.groupsfund.domain.account.dto.AcceptInvitationResponse;
+import com.banking.groupsfund.domain.account.dto.AccountDetailResponse;
 import com.banking.groupsfund.domain.account.dto.AccountResponse;
 import com.banking.groupsfund.domain.account.dto.CreateAccountRequest;
-import com.banking.groupsfund.domain.account.dto.InvitationRequest;
-import com.banking.groupsfund.domain.account.dto.InvitationResponse;
-import com.banking.groupsfund.domain.account.entity.Invitation;
+import com.banking.groupsfund.domain.account.entity.Account;
+import com.banking.groupsfund.domain.account.service.AccountQueryService;
 import com.banking.groupsfund.domain.account.service.AccountService;
-import com.banking.groupsfund.domain.account.service.InvitationService;
 import com.banking.groupsfund.dto.ApiResponse;
-import com.banking.groupsfund.enums.MemberRole;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountController {
 
     private final AccountService accountService;
-
+    private final AccountQueryService accountQueryService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<AccountResponse>> createAccount(
@@ -48,6 +46,21 @@ public class AccountController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Account created successfully", response));
+    }
+
+    @GetMapping("/{accountId}")
+    @PreAuthorize("@fundAccess.isMember(#accountId, principal.customerId())") // chỉ thành viên trong quỹ mới xem được
+    ResponseEntity<AccountDetailResponse> getDetail(@PathVariable UUID accountId) {
+        return ResponseEntity.ok(accountQueryService.getAccountDetail(accountId));
+    }
+
+    @PostMapping("/{accountId}/close")
+    @PreAuthorize("@fundAccess.isTreasurer(#accountId, principal.customerId())")
+    public ResponseEntity<ApiResponse<AccountResponse>> close(@PathVariable UUID accountId) {
+        AccountResponse response = accountService.closeAccount(accountId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success("Account closed successfully", response));
     }
 
 }

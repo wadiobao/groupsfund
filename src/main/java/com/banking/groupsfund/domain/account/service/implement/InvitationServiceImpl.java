@@ -20,6 +20,7 @@ import com.banking.groupsfund.domain.account.repository.AccountRepository;
 import com.banking.groupsfund.domain.account.repository.InvitationRepository;
 import com.banking.groupsfund.domain.account.service.InvitationService;
 import com.banking.groupsfund.enums.MemberRole;
+import com.banking.groupsfund.enums.exception.ErrorCode;
 import com.banking.groupsfund.exception.custom.BussinessException;
 import com.banking.groupsfund.exception.custom.NotFoundException;
 
@@ -53,12 +54,12 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     public AcceptInvitationResponse accept(String inviteCode, UUID customerId) {
         Invitation invitation = invitationRepository.findByInviteCode(inviteCode)
-                .orElseThrow(() -> new NotFoundException("Mã mời không tồn tại"));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.INVITATION_NOT_FOUND));
 
         invitation.redeem(); // tự kiểm tra hết hạn/hết lượt và tăng usedCount — ném lỗi nếu vi phạm
 
-        if (memberRepository.existsById(customerId)) {
-            throw new BussinessException("Bạn đã là thành viên của quỹ này");
+        if (memberRepository.existsById(new AccountMember.AccountMemberId(invitation.getAccountId(), customerId))) {
+            throw new BussinessException(ErrorCode.ALREADY_MEMBER);
         }
 
         var membership = new AccountMember(invitation.getAccountId(), customerId, invitation.getRoleToAssign());
