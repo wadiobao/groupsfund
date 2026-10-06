@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.banking.groupsfund.domain.auth.service.OtpService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 public class OtpServiceImpl implements OtpService {
 
@@ -24,9 +22,9 @@ public class OtpServiceImpl implements OtpService {
     private final int otpLength;
 
     private final SecureRandom secureRandom;
-
-    public OtpServiceImpl(@Value("app.otp.expiry-seconds") long expirySeconds,
-            @Value("app.otp.length") int otpLength, StringRedisTemplate redisTemplate) {
+	
+    public OtpServiceImpl(@Value("${app.otp.expiry-seconds:300}") long expirySeconds,
+            @Value("${app.otp.length}") int otpLength, StringRedisTemplate redisTemplate) {
         this.expirySeconds = expirySeconds;
         this.otpLength = otpLength;
         this.redisTemplate = redisTemplate;

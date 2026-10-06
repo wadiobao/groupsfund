@@ -18,6 +18,7 @@ import com.banking.groupsfund.domain.auth.service.AuthService;
 import com.banking.groupsfund.domain.auth.service.OtpService;
 import com.banking.groupsfund.domain.customer.entity.Customer;
 import com.banking.groupsfund.domain.customer.repository.CustomerRepository;
+import com.banking.groupsfund.enums.exception.ErrorCode;
 import com.banking.groupsfund.exception.custom.BussinessException;
 import com.banking.groupsfund.exception.custom.NotFoundException;
 import com.banking.groupsfund.service.JwtService;
@@ -50,10 +51,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String initRegister(RegisterRequest request) {
         if (userCredentialRepository.existsByEmail(request.email())) {
-            throw new BussinessException("Email already in use: " + request.email());
-        }
+            throw new BussinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }   
         if (userCredentialRepository.existsByPhoneNumber(request.phoneNumber())) {
-            throw new BussinessException("Phone number already in use: " + request.phoneNumber());
+            throw new BussinessException(ErrorCode.PHONE_ALREADY_EXISTS);
         }
 
         // Lưu thông tin đăng ký tạm thời vào Redis (TTL = thời gian sống OTP)
@@ -80,14 +81,14 @@ public class AuthServiceImpl implements AuthService {
         // Xác thực OTP — sẽ tự xoá OTP sau khi verify thành công
         boolean valid = otpService.verify(request.email(), request.otp());
         if (!valid) {
-            throw new BussinessException("OTP is invalid or has expired");
+            throw new BussinessException(ErrorCode.INVALID_OTP);
         }
 
         // Lấy thông tin đăng ký tạm từ Redis
         String pendingKey = PENDING_PREFIX + request.email().toLowerCase();
         String pendingValue = redisTemplate.opsForValue().get(pendingKey);
         if (pendingValue == null) {
-            throw new NotFoundException("Registration session has expired. Please start over.");
+            throw new NotFoundException(ErrorCode.REGISTRATION_SESSION_EXPIRED);
         }
 
         // Parse dữ liệu tạm (fullName|phoneNumber|gender|passwordHash)
@@ -130,16 +131,16 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(LoginRequest request) {
         UserCredential credential = request.username().contains("@")
                 ? userCredentialRepository.findByEmail(request.username())
-                        .orElseThrow(() -> new BussinessException("Invalid email or password"))
+                        .orElseThrow(() -> new BussinessException(ErrorCode.INVALID_CREDENTIALS))
                 : userCredentialRepository.findByPhoneNumber(request.username())
-                        .orElseThrow(() -> new BussinessException("Invalid phone number or password"));
+                        .orElseThrow(() -> new BussinessException(ErrorCode.INVALID_CREDENTIALS));
 
         if (!credential.isActive()) {
-            throw new BussinessException("Account is disabled. Please contact support.");
+            throw new BussinessException(ErrorCode.ACCOUNT_DISABLED);
         }
 
         if (!passwordEncoder.matches(request.password(), credential.getPasswordHash())) {
-            throw new BussinessException("Invalid email or password");
+            throw new BussinessException(ErrorCode.INVALID_CREDENTIALS);
         }
 
         Customer customer = credential.getCustomer();
