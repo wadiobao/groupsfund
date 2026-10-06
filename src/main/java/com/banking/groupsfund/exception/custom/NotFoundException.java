@@ -1,7 +1,10 @@
 package com.banking.groupsfund.exception.custom;
 
-public class NotFoundException extends RuntimeException {
-    public NotFoundException(String message) {
-        super(message);
+import com.banking.groupsfund.enums.exception.ErrorCode;
+
+public class NotFoundException extends AppException {
+
+    public NotFoundException(ErrorCode errorCode) {
+        super(errorCode.getMessage(), errorCode);
     }
 }
